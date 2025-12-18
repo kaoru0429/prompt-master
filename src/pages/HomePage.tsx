@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import React, { useState, useEffect } from 'react';
 import {
   Search, Plus, Heart, Copy, Sparkles, Tag, Settings,
@@ -153,10 +153,17 @@ const ViewEditPromptModal: React.FC<{
   const [isNSFW, setIsNSFW] = useState(prompt.isNSFW);
   const [copied, setCopied] = useState(false);
 
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (copied) {
+      timeout = setTimeout(() => setCopied(false), 2000);
+    }
+    return () => clearTimeout(timeout);
+  }, [copied]);
+
   const handleCopy = async () => {
     await navigator.clipboard.writeText(content);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleSave = () => {
@@ -523,10 +530,17 @@ const UsePromptModal: React.FC<{
 
   const finalPrompt = replaceVariables(prompt.content, values);
 
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (copied) {
+      timeout = setTimeout(() => setCopied(false), 2000);
+    }
+    return () => clearTimeout(timeout);
+  }, [copied]);
+
   const handleCopy = async () => {
     await navigator.clipboard.writeText(finalPrompt);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
