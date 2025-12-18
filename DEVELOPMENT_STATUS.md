@@ -48,6 +48,10 @@
 
 ## 變更日誌
 
+### v0.1.2 (2025-12-18)
+- ✨ 功能：整合 `Jules Awesome List` 同步來源
+- 🐛 修正：變數類型定義錯誤
+
 ### v0.1.1 (2025-12-18)
 - ♻️ 重構：拆分 PromptCard 元件
 - ✨ 功能：實作 Sync 服務 (整合 Awesome ChatGPT Prompts)

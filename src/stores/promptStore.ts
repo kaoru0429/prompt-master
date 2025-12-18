@@ -74,7 +74,15 @@ const defaultSources: PromptSource[] = [
     url: 'https://promptbase.com',
     enabled: false,
     isNSFW: false,
-    promptCount: 200
+    promptCount: 100
+  },
+  {
+    id: 'jules-awesome',
+    name: 'Jules Awesome List',
+    url: 'https://github.com/google-labs-code/jules-awesome-list',
+    enabled: true,
+    isNSFW: false,
+    promptCount: 50
   }
 ];
 

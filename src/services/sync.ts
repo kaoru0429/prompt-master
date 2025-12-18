@@ -12,8 +12,96 @@ export async function syncPromptsFromSource(sourceId: string): Promise<Prompt[]>
     return fetchAwesomePrompts();
   }
 
+  if (sourceId === 'jules-awesome') {
+    return fetchJulesPrompts();
+  }
+
   // Fallback / Mock for others
   return generateMockPrompts(sourceId);
+}
+
+async function fetchJulesPrompts(): Promise<Prompt[]> {
+  try {
+    const response = await fetch('https://raw.githubusercontent.com/google-labs-code/jules-awesome-list/main/README.md');
+    if (!response.ok) throw new Error('Network response was not ok');
+    const text = await response.text();
+
+    const prompts: Prompt[] = [];
+    const lines = text.split('\n');
+    let currentCategory = 'General';
+
+    // Basic parser for the specific README format
+    // Format: - \n // Prompt... \n Description
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+
+      if (line.startsWith('## ')) {
+        currentCategory = line.replace('## ', '').trim();
+        continue;
+      }
+
+      // Detect prompt lines starting with //
+      if (line.startsWith('//')) {
+        const content = line;
+        // Try to find description in next non-empty lines
+        let description = 'Jules Awesome Prompt';
+        let j = i + 1;
+        while (j < lines.length && j < i + 5) {
+          const nextLine = lines[j].trim();
+          if (nextLine && !nextLine.startsWith('//') && !nextLine.startsWith('```') && !nextLine.startsWith('-')) {
+            description = nextLine;
+            break;
+          }
+          j++;
+        }
+
+        prompts.push({
+          id: generateId(),
+          title: content.length > 50 ? content.substring(0, 47) + '...' : content,
+          description: description,
+          content: content,
+          tags: ['jules', 'agent', 'automation', currentCategory.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')],
+          category: 'Coding',
+          model: 'Gemini', // Jules uses Gemini
+          mode: 'text',
+          variables: [],
+          isFavorite: false,
+          isNSFW: false,
+          source: 'synced',
+          sourceUrl: 'https://github.com/google-labs-code/jules-awesome-list',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        });
+      }
+    }
+    return prompts;
+  } catch (error) {
+    console.error('Failed to fetch Jules Prompts:', error);
+    // Fallback with some static data if fetch fails (CORS or offline)
+    return [
+      {
+        id: generateId(),
+        title: '// Refactor file from x to y',
+        description: 'General-purpose refactoring prompt for any language.',
+        content: '// Refactor {file} from {legacy_pattern} to {modern_pattern}...',
+        tags: ['jules', 'refactor', 'everyday-dev-tasks'],
+        category: 'Coding',
+        model: 'Gemini',
+        mode: 'text',
+        variables: [
+          { name: 'file', description: 'File path', type: 'text', required: true },
+          { name: 'legacy_pattern', description: 'Pattern to replace', type: 'text', required: true },
+          { name: 'modern_pattern', description: 'New pattern', type: 'text', required: true }
+        ],
+        isFavorite: false,
+        isNSFW: false,
+        source: 'synced',
+        sourceUrl: 'https://github.com/google-labs-code/jules-awesome-list',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    ];
+  }
 }
 
 async function fetchAwesomePrompts(): Promise<Prompt[]> {
