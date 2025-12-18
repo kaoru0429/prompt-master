@@ -200,5 +200,128 @@ Begin the roleplay when I send my first message.`,
     copies: 234,
     createdAt: '2024-09-15T00:00:00Z',
     updatedAt: '2024-09-15T00:00:00Z'
+  },
+  // NSFW Prompts
+  {
+    id: 'nsfw-1',
+    title: '浪漫小說場景生成器',
+    description: '生成成人浪漫小說中的親密場景描寫',
+    content: `你是一位專業的成人浪漫小說作家。請根據以下設定創作一段親密場景：
+
+角色A：{{character_a}}
+角色B：{{character_b}}
+場景設定：{{setting}}
+氛圍：{{mood}}
+描寫程度：{{intensity}}
+
+要求：
+- 使用優美的文學語言
+- 著重情感交流與氛圍營造
+- 符合角色性格特徵
+- 控制在 500-800 字`,
+    tags: ['Creative', 'Romance', 'Fiction', 'Adult'],
+    category: 'Creative',
+    model: 'Claude',
+    mode: 'text',
+    variables: [
+      { name: 'character_a', description: '角色A的描述', type: 'textarea', required: true },
+      { name: 'character_b', description: '角色B的描述', type: 'textarea', required: true },
+      { name: 'setting', description: '場景設定（地點、時間）', type: 'text', required: true },
+      { name: 'mood', description: '氛圍（浪漫/激情/溫柔）', type: 'text', required: false },
+      { name: 'intensity', description: '描寫程度（含蓄/中等/詳細）', type: 'select', options: ['含蓄', '中等', '詳細'], required: true }
+    ],
+    isFavorite: false,
+    isNSFW: true,
+    source: 'community',
+    author: 'RomanceWriter',
+    rating: 4.5,
+    views: 1823,
+    copies: 145,
+    createdAt: '2024-11-20T00:00:00Z',
+    updatedAt: '2024-11-20T00:00:00Z'
+  },
+  {
+    id: 'nsfw-2',
+    title: 'AI 伴侶角色扮演',
+    description: '創建個性化的 AI 伴侶角色進行互動對話',
+    content: `你將扮演一個名為 {{companion_name}} 的 AI 伴侶角色。
+
+基本設定：
+- 外貌：{{appearance}}
+- 性格：{{personality}}
+- 說話方式：{{speaking_style}}
+- 興趣愛好：{{hobbies}}
+
+關係設定：{{relationship}}
+
+互動規則：
+1. 始終保持角色一致性
+2. 根據對話發展自然回應
+3. 表達適當的情感與關心
+4. 記住之前的對話內容
+
+開始對話後請以角色身份打招呼。`,
+    tags: ['Roleplay', 'Companion', 'Interactive', 'Adult'],
+    category: 'Creative',
+    model: 'ChatGPT',
+    mode: 'text',
+    variables: [
+      { name: 'companion_name', description: '伴侶名字', type: 'text', required: true },
+      { name: 'appearance', description: '外貌描述', type: 'textarea', required: true },
+      { name: 'personality', description: '性格特徵', type: 'textarea', required: true },
+      { name: 'speaking_style', description: '說話風格', type: 'text', required: false },
+      { name: 'hobbies', description: '興趣愛好', type: 'text', required: false },
+      { name: 'relationship', description: '關係設定', type: 'text', required: true }
+    ],
+    isFavorite: false,
+    isNSFW: true,
+    source: 'community',
+    author: 'CompanionAI',
+    rating: 4.7,
+    views: 5672,
+    copies: 423,
+    createdAt: '2024-10-05T00:00:00Z',
+    updatedAt: '2024-10-05T00:00:00Z'
+  },
+  {
+    id: 'nsfw-3',
+    title: 'NSFW AI 繪圖提示詞生成器',
+    description: '生成適用於 Stable Diffusion 的成人繪圖提示詞',
+    content: `Generate a detailed NSFW prompt for Stable Diffusion:
+
+Subject: {{subject}}
+Style: {{art_style}}
+Body Type: {{body_type}}
+Pose: {{pose}}
+Setting: {{setting}}
+Lighting: {{lighting}}
+
+Output format:
+- Positive prompt (detailed, with quality tags)
+- Negative prompt
+- Recommended settings (CFG, Steps, Sampler)
+
+Note: Focus on artistic quality and aesthetic composition.`,
+    tags: ['Image', 'Stable Diffusion', 'AI Art', 'NSFW'],
+    category: 'Image',
+    model: 'Gemini',
+    mode: 'image',
+    variables: [
+      { name: 'subject', description: '主題描述', type: 'textarea', required: true },
+      { name: 'art_style', description: '藝術風格', type: 'text', required: true },
+      { name: 'body_type', description: '體型設定', type: 'text', required: false },
+      { name: 'pose', description: '姿勢描述', type: 'text', required: false },
+      { name: 'setting', description: '場景設定', type: 'text', required: false },
+      { name: 'lighting', description: '光線設定', type: 'text', required: false }
+    ],
+    isFavorite: false,
+    isNSFW: true,
+    source: 'community',
+    author: 'SDPromptMaster',
+    rating: 4.8,
+    views: 8934,
+    copies: 712,
+    createdAt: '2024-09-28T00:00:00Z',
+    updatedAt: '2024-09-28T00:00:00Z'
   }
 ];

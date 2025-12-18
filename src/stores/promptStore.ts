@@ -64,14 +64,6 @@ const defaultSources: PromptSource[] = [
     promptCount: 150
   },
   {
-    id: 'civitai',
-    name: 'CivitAI',
-    url: 'https://civitai.com',
-    enabled: false,
-    isNSFW: true,
-    promptCount: 1000
-  },
-  {
     id: 'promptbase',
     name: 'PromptBase',
     url: 'https://promptbase.com',
@@ -79,15 +71,32 @@ const defaultSources: PromptSource[] = [
     isNSFW: false,
     promptCount: 100
   },
+  // NSFW Sources
   {
-    id: 'jules-awesome',
-    name: 'Jules Awesome List',
-    url: 'https://github.com/google-labs-code/jules-awesome-list',
-    enabled: true,
-    isNSFW: false,
-    promptCount: 50
-  }
+    id: 'civitai',
+    name: 'CivitAI',
+    url: 'https://civitai.com',
+    enabled: false,
+    isNSFW: true,
+    promptCount: 2500
+  },
+  {
+    id: 'chub-ai',
+    name: 'Chub.AI',
+    url: 'https://chub.ai',
+    enabled: false,
+    isNSFW: true,
+    promptCount: 1200
+  },
+  {
+    id: 'janitorai',
+    name: 'JanitorAI',
+    url: 'https://janitorai.com',
+    enabled: false,
+    isNSFW: true,
+  },
 ];
+
 
 export const usePromptStore = create<PromptStore>()(
   persist(
