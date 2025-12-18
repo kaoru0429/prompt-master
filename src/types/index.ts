@@ -20,6 +20,13 @@ export interface Prompt {
   copies?: number;
   createdAt: string;
   updatedAt: string;
+  history?: PromptHistoryEntry[];
+}
+
+export interface PromptHistoryEntry {
+  id: string;
+  content: string;
+  timestamp: string;
 }
 
 export interface Variable {
@@ -62,3 +69,5 @@ export interface Tag {
   count: number;
   color?: string;
 }
+
+export type PageType = 'all' | 'favorites' | 'trending' | 'tags' | 'settings' | 'collections';

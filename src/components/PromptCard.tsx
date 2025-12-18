@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { Check, Copy, Heart, Wand2 } from 'lucide-react';
 import type { Prompt } from '../types';
+import TextHighlighter from './TextHighlighter';
 
 interface PromptCardProps {
   prompt: Prompt;
+  searchTerm?: string;
   onView: () => void;
   onUse: () => void;
   onToggleFavorite: () => void;
 }
 
-const PromptCard: React.FC<PromptCardProps> = ({ prompt, onView, onUse, onToggleFavorite }) => {
+const PromptCard: React.FC<PromptCardProps> = ({ prompt, searchTerm = '', onView, onUse, onToggleFavorite }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async (e: React.MouseEvent) => {
@@ -39,14 +41,18 @@ const PromptCard: React.FC<PromptCardProps> = ({ prompt, onView, onUse, onToggle
       <div className="prompt-card-header">
         <h3 className="prompt-card-title">
           {prompt.isNSFW && <span className="tag nsfw">18+</span>}
-          {prompt.title}
+          <TextHighlighter text={prompt.title} highlight={searchTerm} />
         </h3>
-        <p className="prompt-card-description">{prompt.description}</p>
+        <p className="prompt-card-description">
+          <TextHighlighter text={prompt.description} highlight={searchTerm} />
+        </p>
       </div>
 
       <div className="prompt-card-tags">
         {prompt.tags.slice(0, 4).map(tag => (
-          <span key={tag} className="tag">{tag}</span>
+          <span key={tag} className="tag">
+            <TextHighlighter text={tag} highlight={searchTerm} />
+          </span>
         ))}
         {prompt.tags.length > 4 && (
           <span className="tag">+{prompt.tags.length - 4}</span>

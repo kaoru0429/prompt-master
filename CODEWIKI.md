@@ -58,7 +58,7 @@ graph TB
 prompt-master/
 ├── src/
 │   ├── pages/
-│   │   └── HomePage.tsx      # 主頁面元件 (~1400 行)
+│   │   └── HomePage.tsx      # 主頁面元件 (~260 行)
 │   ├── services/
 │   │   ├── db.ts             # IndexedDB 資料庫定義
 │   │   └── gemini.ts         # Gemini AI 整合

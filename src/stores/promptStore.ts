@@ -5,6 +5,7 @@ import { db } from '../services/db';
 
 interface PromptStore {
   prompts: Prompt[];
+  isLoading: boolean;
   collections: Collection[];
   sources: PromptSource[];
   filters: {
@@ -29,6 +30,8 @@ interface PromptStore {
   // Collections
   addCollection: (collection: Collection) => Promise<void>;
   deleteCollection: (id: string) => Promise<void>;
+  addToCollection: (collectionId: string, promptId: string) => Promise<void>;
+  removeFromCollection: (collectionId: string, promptId: string) => Promise<void>;
 
   // Sources
   toggleSource: (id: string) => Promise<void>;
@@ -90,6 +93,7 @@ export const usePromptStore = create<PromptStore>()(
   persist(
     (set, get) => ({
       prompts: [],
+      isLoading: false,
       collections: [],
       sources: defaultSources,
       filters: {
@@ -102,9 +106,14 @@ export const usePromptStore = create<PromptStore>()(
       },
 
       loadPrompts: async () => {
-        const prompts = await db.prompts.toArray();
-        const collections = await db.collections.toArray();
-        set({ prompts, collections });
+        set({ isLoading: true });
+        try {
+          const prompts = await db.prompts.toArray();
+          const collections = await db.collections.toArray();
+          set({ prompts, collections });
+        } finally {
+          set({ isLoading: false });
+        }
       },
 
       addPrompt: async (prompt) => {
@@ -113,11 +122,25 @@ export const usePromptStore = create<PromptStore>()(
       },
 
       updatePrompt: async (id, updates) => {
-        await db.prompts.update(id, { ...updates, updatedAt: new Date().toISOString() });
-        set((state) => ({
-          prompts: state.prompts.map((p) =>
-            p.id === id ? { ...p, ...updates, updatedAt: new Date().toISOString() } : p
-          )
+        const current = get().prompts.find(p => p.id === id);
+        if (!current) return;
+
+        let history = current.history || [];
+        if (updates.content && updates.content !== current.content) {
+          history = [
+            {
+              id: crypto.randomUUID(),
+              content: current.content,
+              timestamp: new Date().toISOString()
+            },
+            ...history
+          ].slice(0, 10);
+        }
+
+        const updated = { ...current, ...updates, history, updatedAt: new Date().toISOString() };
+        await db.prompts.update(id, updated);
+        set(state => ({
+          prompts: state.prompts.map(p => p.id === id ? updated : p)
         }));
       },
 
@@ -165,6 +188,32 @@ export const usePromptStore = create<PromptStore>()(
       deleteCollection: async (id) => {
         await db.collections.delete(id);
         set((state) => ({ collections: state.collections.filter((c) => c.id !== id) }));
+      },
+
+      addToCollection: async (collectionId, promptId) => {
+        const collection = get().collections.find((c) => c.id === collectionId);
+        if (collection && !collection.promptIds.includes(promptId)) {
+          const newPromptIds = [...collection.promptIds, promptId];
+          await db.collections.update(collectionId, { promptIds: newPromptIds });
+          set((state) => ({
+            collections: state.collections.map((c) =>
+              c.id === collectionId ? { ...c, promptIds: newPromptIds } : c
+            )
+          }));
+        }
+      },
+
+      removeFromCollection: async (collectionId, promptId) => {
+        const collection = get().collections.find((c) => c.id === collectionId);
+        if (collection) {
+          const newPromptIds = collection.promptIds.filter((id) => id !== promptId);
+          await db.collections.update(collectionId, { promptIds: newPromptIds });
+          set((state) => ({
+            collections: state.collections.map((c) =>
+              c.id === collectionId ? { ...c, promptIds: newPromptIds } : c
+            )
+          }));
+        }
       },
 
       toggleSource: async (id) => {
