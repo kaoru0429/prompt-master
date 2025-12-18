@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Download, Sparkles, Trash2, AlertTriangle, RefreshCw } from 'lucide-react';
 import { usePromptStore } from '../stores/promptStore';
 import ImportExportModal from '../components/modals/ImportExportModal';
+import ResetDataButton from '../components/ResetDataButton';
 import { batchAnalyzePrompts, detectDuplicatesAndInvalid, type DuplicateCheckResult } from '../services/gemini';
 import type { Prompt } from '../types';
 import { toast } from 'sonner';
@@ -222,9 +223,18 @@ const SettingsPage: React.FC = () => {
 
       <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius)', padding: '20px', marginBottom: '20px' }}>
         <h3 style={{ marginBottom: '16px', fontSize: '16px' }}>📦 備份與還原</h3>
-        <button className="btn btn-secondary" onClick={() => setShowImportExport(true)}>
-          <Download size={16} /> 匯入 / 匯出 Prompts
-        </button>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <button className="btn btn-secondary" onClick={() => setShowImportExport(true)}>
+            <Download size={16} /> 匯入 / 匯出 Prompts
+          </button>
+
+          <div style={{ flex: 1 }}></div>
+
+          <div style={{ paddingTop: '8px', borderTop: '1px solid var(--border)', width: '100%', marginTop: '8px' }}>
+            <h4 style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '8px' }}>危險區域</h4>
+            <ResetDataButton />
+          </div>
+        </div>
       </div>
 
       <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius)', padding: '20px', marginBottom: '20px' }}>
@@ -235,7 +245,7 @@ const SettingsPage: React.FC = () => {
               type="checkbox"
               checked={source.enabled}
               onChange={() => toggleSource(source.id)}
-              style={{ accentColor: '#6366f1' }}
+              style={{ accentColor: '#d4af37' }}
             />
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 500 }}>{source.name}</div>
@@ -248,10 +258,11 @@ const SettingsPage: React.FC = () => {
 
       <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius)', padding: '20px' }}>
         <h3 style={{ marginBottom: '16px', fontSize: '16px' }}>關於</h3>
-        <p style={{ color: 'var(--text-secondary)' }}>
-          Prompt Master v1.2.0<br />
+        <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+          <strong>Prompt Master</strong> v1.2.1<br />
+          Enterprise Premium Edition<br />
           使用 Gemini AI 進行智慧分析<br />
-          資料儲存於本地 IndexedDB
+          <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>資料儲存於本地 IndexedDB (v2)</span>
         </p>
       </div>
 

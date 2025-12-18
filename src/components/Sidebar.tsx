@@ -1,10 +1,14 @@
 import { NavLink } from 'react-router-dom';
 import {
-  Sparkles, FolderOpen, Heart, Folder, TrendingUp, Tag, Settings
+  Sparkles, FolderOpen, Heart, Folder, TrendingUp, Tag, Settings, Workflow
 } from 'lucide-react';
 import { usePromptStore } from '../stores/promptStore';
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  onMobileItemClick?: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ onMobileItemClick }) => {
   const { prompts, sources, toggleSource, collections } = usePromptStore();
   const favorites = prompts.filter(p => p.isFavorite).length;
 
@@ -20,6 +24,7 @@ const Sidebar: React.FC = () => {
         <NavLink
           to="/"
           className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+          onClick={onMobileItemClick}
         >
           <FolderOpen size={18} /> 所有 Prompts
           <span style={{ marginLeft: 'auto', opacity: 0.6 }}>{prompts.length}</span>
@@ -27,6 +32,7 @@ const Sidebar: React.FC = () => {
         <NavLink
           to="/favorites"
           className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+          onClick={onMobileItemClick}
         >
           <Heart size={18} /> 收藏
           <span style={{ marginLeft: 'auto', opacity: 0.6 }}>{favorites}</span>
@@ -34,19 +40,29 @@ const Sidebar: React.FC = () => {
         <NavLink
           to="/collections"
           className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+          onClick={onMobileItemClick}
         >
           <Folder size={18} /> 收藏集
           <span style={{ marginLeft: 'auto', opacity: 0.6 }}>{collections.length}</span>
         </NavLink>
         <NavLink
+          to="/workflows"
+          className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+          onClick={onMobileItemClick}
+        >
+          <Workflow size={18} /> 工作流
+        </NavLink>
+        <NavLink
           to="/trending"
           className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+          onClick={onMobileItemClick}
         >
           <TrendingUp size={18} /> 熱門庫
         </NavLink>
         <NavLink
           to="/tags"
           className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+          onClick={onMobileItemClick}
         >
           <Tag size={18} /> 標籤瀏覽
         </NavLink>
@@ -77,6 +93,7 @@ const Sidebar: React.FC = () => {
         <NavLink
           to="/settings"
           className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+          onClick={onMobileItemClick}
         >
           <Settings size={18} /> 設定
         </NavLink>

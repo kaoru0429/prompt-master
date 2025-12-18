@@ -7,6 +7,7 @@ import { parseVariables } from '../../utils/variableUtils';
 import { useClipboard } from '../../hooks/useClipboard';
 import { usePromptStore } from '../../stores/promptStore';
 import { analyzePrompt } from '../../services/gemini';
+import AIEditor from '../AIEditor';
 
 interface ViewEditPromptModalProps {
   prompt: Prompt;
@@ -196,11 +197,11 @@ const ViewEditPromptModal: React.FC<ViewEditPromptModalProps> = ({
                     </div>
                   </div>
                 )}
-                <textarea
-                  className="form-textarea"
+                <AIEditor
                   value={content}
-                  onChange={e => setContent(e.target.value)}
-                  style={{ minHeight: '250px' }}
+                  onChange={setContent}
+                  minHeight="250px"
+                  placeholder="Prompt 內容..."
                 />
               </div>
 

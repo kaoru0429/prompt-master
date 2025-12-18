@@ -343,3 +343,79 @@ ${content.slice(0, 500)}
     return text.replace(/^["']|["']$/g, '');
   }, '未命名 Prompt');
 }
+
+/**
+ * 編輯器即時建議 (Auto-complete)
+ */
+export async function getInlineSuggestion(
+  contextBefore: string,
+  contextAfter: string
+): Promise<string> {
+  if (!contextBefore.trim()) return '';
+
+  const systemPrompt = `你是一個 AI 寫作助手。請根據游標前的內容，預測並生成接下來的文字。
+只生成接下來的一小段文字（約 5-20 字），不要重複前後文。如果無法預測，回傳空字串。
+
+游標前內容：
+"""
+${contextBefore.slice(-500)}
+"""
+
+游標後內容：
+"""
+${contextAfter.slice(0, 500)}
+"""
+
+只回傳建議的續寫文字。`;
+
+  return callWithRetry(async () => {
+    const result = await getModel().generateContent(systemPrompt);
+    return result.response.text().trim();
+  }, '', 1); // Only retry once for auto-complete for speed
+}
+
+/**
+ * 執行編輯器指令 (/command)
+ */
+export async function executeAICommand(
+  command: string,
+  selectedText: string,
+  fullContext: string
+): Promise<string> {
+  let prompt = '';
+
+  switch (command) {
+    case 'improve':
+      prompt = `優化以下文字，使其更通順、專業：\n"${selectedText}"`;
+      break;
+    case 'expand':
+      prompt = `擴充以下內容，增加細節與說明：\n"${selectedText}"`;
+      break;
+    case 'simplify':
+      prompt = `簡化以下內容，使其更易懂：\n"${selectedText}"`;
+      break;
+    case 'translate':
+      prompt = `將以下內容翻譯成繁體中文（如果是中文則翻成英文）：\n"${selectedText}"`;
+      break;
+    default:
+      // Custom command
+      prompt = `${command}：\n"${selectedText || fullContext}"`;
+  }
+
+  const systemPrompt = `${prompt}\n\n只回傳處理後的結果文字，不要加引號。`;
+
+  return callWithRetry(async () => {
+    const result = await getModel().generateContent(systemPrompt);
+    return result.response.text().trim();
+  }, selectedText);
+}
+
+/**
+ * 通用：生成回應
+ */
+export async function generateResponse(prompt: string): Promise<string> {
+  return callWithRetry(async () => {
+    const result = await getModel().generateContent(prompt);
+    return result.response.text().trim();
+  }, '');
+}

@@ -70,4 +70,36 @@ export interface Tag {
   color?: string;
 }
 
-export type PageType = 'all' | 'favorites' | 'trending' | 'tags' | 'settings' | 'collections';
+export type PageType = 'all' | 'favorites' | 'trending' | 'tags' | 'settings' | 'collections' | 'workflows';
+
+// Workflow Types
+
+export interface Workflow {
+  id: string;
+  name: string;
+  description: string;
+  steps: WorkflowStep[];
+  variables: Variable[]; // Global workflow variables or input variables
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WorkflowStep {
+  id: string;
+  promptId?: string; // If null, it's a "custom" prompt step or logic
+  name: string;
+  content: string; // The prompt template for this step
+  inputs: Record<string, string>; // Mapping of variable name to value (or reference to previous output)
+  outputVariable?: string; // Name of the variable to store the output result
+}
+
+export interface WorkflowRun {
+  id: string;
+  workflowId: string;
+  status: 'pending' | 'running' | 'completed' | 'failed';
+  results: Record<string, string>; // Variable name -> Result
+  stepResults: Record<string, string>; // Step ID -> Result
+  createdAt: string;
+  completedAt?: string;
+  error?: string;
+}

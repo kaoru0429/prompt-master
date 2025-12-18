@@ -8,6 +8,7 @@ import SettingsPage from './pages/SettingsPage';
 import TrendingPage from './pages/TrendingPage';
 import CollectionsPage from './pages/CollectionsPage';
 import CollectionDetailsPage from './pages/CollectionDetailsPage';
+import WorkflowsPage from './pages/WorkflowsPage';
 
 function App() {
   return (
@@ -20,6 +21,8 @@ function App() {
           <Route path="/tags" element={<TagsPage />} />
           <Route path="/collections" element={<CollectionsPage />} />
           <Route path="/collections/:id" element={<CollectionDetailsPage />} />
+          <Route path="/workflows" element={<WorkflowsPage />} />
+          <Route path="/workflows/:id" element={<WorkflowsPage />} /> {/* Placeholder for now */}
           <Route path="/trending" element={<TrendingPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>

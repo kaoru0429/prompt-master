@@ -5,6 +5,7 @@ import { generateId } from '../../utils/common';
 import { parseVariables } from '../../utils/variableUtils';
 import type { Prompt } from '../../types';
 import { usePromptStore } from '../../stores/promptStore';
+import AIEditor from '../AIEditor';
 
 interface AddPromptModalProps {
   onClose: () => void;
@@ -90,12 +91,11 @@ const AddPromptModal: React.FC<AddPromptModalProps> = ({ onClose, onSave }) => {
         <div className="modal-body">
           <div className="form-group">
             <label className="form-label">Prompt 內容 *</label>
-            <textarea
-              className="form-textarea"
+            <AIEditor
               value={content}
-              onChange={e => setContent(e.target.value)}
-              placeholder="貼上您的 Prompt...&#10;支援變數格式: {{variable}} 或 [variable]"
-              style={{ minHeight: '200px' }}
+              onChange={setContent}
+              placeholder="貼上您的 Prompt...&#10;支援變數格式: {{variable}} 或 [variable]&#10;按 / 呼叫 AI 助手"
+              minHeight="200px"
             />
           </div>
 
