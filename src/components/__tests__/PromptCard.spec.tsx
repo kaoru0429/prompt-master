@@ -20,6 +20,7 @@ const mockPrompt: Prompt = {
   updatedAt: new Date().toISOString()
 };
 
+console.log('Test file executing');
 describe('PromptCard', () => {
   it('renders prompt details correctly', () => {
     render(
