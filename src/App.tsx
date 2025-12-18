@@ -11,7 +11,7 @@ import CollectionDetailsPage from './pages/CollectionDetailsPage';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Toaster position="bottom-right" theme="dark" richColors />
       <Routes>
         <Route element={<Layout />}>

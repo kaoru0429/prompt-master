@@ -6,14 +6,15 @@
 
 | 指標 | 值 |
 |------|------|
-| 總體完成度 | 98% |
+| 總體完成度 | 100% |
 | 核心功能 | ✅ 完成 |
 | 導航系統 | ✅ 已實作 React Router v7 |
-| 測試覆蓋 | ⚠️ 35% (PromptCard, usePromptFilters) |
+| 測試覆蓋 | ✅ 已整合 Playwright E2E |
 | 穩定性 | ✅ 已加入 ErrorBoundary |
 | 載入優化 | ✅ 已加入 Skeleton Loading |
 | 搜尋體驗 | ✅ 已加入搜尋結果高亮 |
-| 離線支援 | ✅ PWA 基礎架構已建立 |
+| 離線支援 | ✅ PWA 正式上線 |
+| 布署狀態 | ✅ 已發布至 GitHub Pages |
 
 ---
 
