@@ -48,6 +48,14 @@
 
 ## 變更日誌
 
+### v0.1.3 (2025-12-18) - **Hotfix & Polish**
+- 🚑 修正：恢復 UI 渲染 (取消 renderContent 註解)
+- 🐛 修正：更新 Gemini 模型為 `gemini-2.5-flash`，修復 AI 自動分析 404 錯誤
+- 🔧 設定：建立 `.env` 並配置 API Key
+- ♻️ 重構：移除 `// @ts-nocheck`，修復全域類型錯誤 (Strict Mode)
+- ⚡ 效能：修復 Modal 組件卸載時的記憶體洩漏問題 (Timer Cleanup)
+- ♻️ 優化：`gemini.ts` 增加重試機制與錯誤處理
+
 ### v0.1.2 (2025-12-18)
 - ✨ 功能：整合 `Jules Awesome List` 同步來源
 - 🐛 修正：變數類型定義錯誤
@@ -74,7 +82,8 @@
 
 | ID | 嚴重度 | 狀態 | 描述 |
 |----|--------|------|------|
-| #1 | 低 | 開放 | HomePage.tsx 使用 @ts-nocheck 繞過類型檢查 |
+| #1 | 低 | ✅ 已解決 | HomePage.tsx 使用 @ts-nocheck 繞過類型檢查 |
+| #2 | 中 | 待觀察 | AI 分析偶爾會因 API Rate Limit 而失敗 (已加入重試機制) |
 
 ---
 
@@ -84,4 +93,5 @@
 2. [x] 提交初始版本
 3. [ ] 設定 CI/CD (GitHub Actions)
 4. [x] 加入單元測試 (基礎設定完成)
-5. [ ] 重構 HomePage.tsx 拆分元件 (進行中)
+5. [ ] 重構 HomePage.tsx 拆分 Modals 至獨立檔案
+6. [ ] 增加 E2E 測試 (Playwright)
