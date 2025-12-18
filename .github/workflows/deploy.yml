@@ -25,12 +25,8 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Type Check
-        run: npx tsc -b
-        continue-on-error: true
-
       - name: Build
-        run: npx vite build --base=/prompt-master/
+        run: npm run build
         env:
           VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
 
