@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Download, Sparkles, Trash2, AlertTriangle, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Download, Sparkles, Trash2, AlertTriangle, RefreshCw, Key, Eye, EyeOff, Check } from 'lucide-react';
 import { usePromptStore } from '../stores/promptStore';
 import ImportExportModal from '../components/modals/ImportExportModal';
 import ResetDataButton from '../components/ResetDataButton';
-import { batchAnalyzePrompts, detectDuplicatesAndInvalid, type DuplicateCheckResult } from '../services/gemini';
+import { batchAnalyzePrompts, detectDuplicatesAndInvalid, type DuplicateCheckResult, saveApiKey, getCurrentApiKey, clearApiKey } from '../services/gemini';
 import type { Prompt } from '../types';
 import { toast } from 'sonner';
 
@@ -13,6 +13,36 @@ const SettingsPage: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [duplicates, setDuplicates] = useState<DuplicateCheckResult[]>([]);
+
+  // API Key 管理
+  const [apiKey, setApiKey] = useState('');
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [hasApiKey, setHasApiKey] = useState(false);
+
+  useEffect(() => {
+    const currentKey = getCurrentApiKey();
+    if (currentKey) {
+      setApiKey(currentKey);
+      setHasApiKey(true);
+    }
+  }, []);
+
+  const handleSaveApiKey = () => {
+    if (!apiKey.trim()) {
+      toast.error('請輸入 API Key');
+      return;
+    }
+    saveApiKey(apiKey.trim());
+    setHasApiKey(true);
+    toast.success('API Key 已儲存！');
+  };
+
+  const handleClearApiKey = () => {
+    clearApiKey();
+    setApiKey('');
+    setHasApiKey(false);
+    toast.success('API Key 已清除');
+  };
 
   const handleBulkImport = (importedPrompts: Prompt[]) => {
     importedPrompts.forEach(p => addPrompt(p));
@@ -134,6 +164,70 @@ const SettingsPage: React.FC = () => {
   return (
     <div>
       <h2 style={{ marginBottom: '24px' }}>設定</h2>
+
+      {/* API Key 設定 */}
+      <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius)', padding: '20px', marginBottom: '20px' }}>
+        <h3 style={{ marginBottom: '16px', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Key size={18} style={{ color: 'var(--accent)' }} /> Gemini API Key
+        </h3>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '16px', fontSize: '14px' }}>
+          設定您的 Gemini API Key 以啟用 AI 分析功能。
+          <a
+            href="https://aistudio.google.com/app/apikey"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'var(--primary)', marginLeft: '8px' }}
+          >
+            👉 免費取得 API Key
+          </a>
+        </p>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
+            <input
+              type={showApiKey ? 'text' : 'password'}
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder="輸入您的 Gemini API Key..."
+              className="form-input"
+              style={{
+                paddingRight: '40px',
+                background: 'var(--bg-primary)',
+                fontFamily: 'monospace'
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowApiKey(!showApiKey)}
+              style={{
+                position: 'absolute',
+                right: '10px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-muted)',
+                cursor: 'pointer',
+                padding: '4px'
+              }}
+            >
+              {showApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+          <button className="btn btn-primary" onClick={handleSaveApiKey}>
+            <Check size={16} /> 儲存
+          </button>
+          {hasApiKey && (
+            <button className="btn btn-secondary" onClick={handleClearApiKey} style={{ color: 'var(--danger)' }}>
+              <Trash2 size={16} /> 清除
+            </button>
+          )}
+        </div>
+        {hasApiKey && (
+          <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--success)', fontSize: '13px' }}>
+            <Check size={14} /> API Key 已設定
+          </div>
+        )}
+      </div>
 
       {/* AI 庫管理 */}
       <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius)', padding: '20px', marginBottom: '20px' }}>

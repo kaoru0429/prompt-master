@@ -4,16 +4,54 @@ import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
 // Configuration
 // ============================================================================
 
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
+const STORAGE_KEY = 'prompt-master-gemini-api-key';
 const MODEL_NAME = 'gemini-2.5-flash';
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 1000;
 
-if (!API_KEY) {
-  console.warn('⚠️ 警告：未設定 VITE_GEMINI_API_KEY 環境變數，AI 功能將無法使用');
+// 優先使用 localStorage 中的 Key，否則用環境變數
+function getApiKey(): string {
+  if (typeof window !== 'undefined') {
+    const storedKey = localStorage.getItem(STORAGE_KEY);
+    if (storedKey) return storedKey;
+  }
+  return import.meta.env.VITE_GEMINI_API_KEY || '';
 }
 
-const genAI = new GoogleGenerativeAI(API_KEY);
+// 儲存 API Key 到 localStorage
+export function saveApiKey(key: string): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(STORAGE_KEY, key);
+    // 重新初始化 genAI
+    cachedGenAI = null;
+  }
+}
+
+// 取得目前的 API Key（用於顯示）
+export function getCurrentApiKey(): string {
+  return getApiKey();
+}
+
+// 清除儲存的 API Key
+export function clearApiKey(): void {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(STORAGE_KEY);
+    cachedGenAI = null;
+  }
+}
+
+let cachedGenAI: GoogleGenerativeAI | null = null;
+
+function getGenAI(): GoogleGenerativeAI {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    console.warn('⚠️ 警告：未設定 Gemini API Key，AI 功能將無法使用');
+  }
+  if (!cachedGenAI) {
+    cachedGenAI = new GoogleGenerativeAI(apiKey);
+  }
+  return cachedGenAI;
+}
 
 // ============================================================================
 // Types
@@ -36,7 +74,7 @@ export interface AnalysisResult {
  * 取得 Gemini 模型實例
  */
 function getModel(): GenerativeModel {
-  return genAI.getGenerativeModel({ model: MODEL_NAME });
+  return getGenAI().getGenerativeModel({ model: MODEL_NAME });
 }
 
 /**
@@ -199,7 +237,7 @@ ${content}
  * 檢查 API 是否可用
  */
 export function isApiConfigured(): boolean {
-  return !!API_KEY;
+  return !!getApiKey();
 }
 
 /**
