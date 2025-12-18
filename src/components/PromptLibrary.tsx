@@ -63,13 +63,19 @@ const PromptLibrary: React.FC<PromptLibraryProps> = ({
           onChange={(e) => setFilter('category', e.target.value)}
         >
           <option value="">所有分類</option>
-          <option value="Coding">Coding</option>
-          <option value="Writing">Writing</option>
-          <option value="Marketing">Marketing</option>
-          <option value="Image">Image</option>
-          <option value="Research">Research</option>
-          <option value="Productivity">Productivity</option>
-          <option value="Creative">Creative</option>
+          <option value="Coding">💻 Coding</option>
+          <option value="Writing">✍️ Writing</option>
+          <option value="Marketing">📈 Marketing</option>
+          <option value="Image">🎨 Image</option>
+          <option value="Research">🔬 Research</option>
+          <option value="Productivity">⚡ Productivity</option>
+          <option value="Creative">🎭 Creative</option>
+          <option value="Business">💼 Business</option>
+          <option value="Education">📚 Education</option>
+          <option value="Entertainment">🎮 Entertainment</option>
+          <option value="Roleplay">🎲 Roleplay</option>
+          <option value="Adult">🔞 Adult</option>
+          <option value="Other">📦 Other</option>
         </select>
 
         <select
@@ -78,9 +84,12 @@ const PromptLibrary: React.FC<PromptLibraryProps> = ({
           onChange={(e) => setFilter('model', e.target.value)}
         >
           <option value="">所有模型</option>
-          <option value="ChatGPT">ChatGPT</option>
-          <option value="Claude">Claude</option>
-          <option value="Gemini">Gemini</option>
+          <option value="ChatGPT">🟢 ChatGPT</option>
+          <option value="Claude">🟣 Claude</option>
+          <option value="Gemini">🔵 Gemini</option>
+          <option value="Midjourney">🎨 Midjourney</option>
+          <option value="Stable Diffusion">🖼️ Stable Diffusion</option>
+          <option value="DALL-E">🌈 DALL-E</option>
         </select>
 
         <label className="filter-select" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
