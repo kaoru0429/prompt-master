@@ -1,0 +1,8 @@
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90mC:/Zero-G Nexus/prompt-master[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+[90mstdout[2m | src/components/__tests__/PromptCard.spec.tsx
+[22m[39mTest file executing
+
+ [32m??[39m src/components/__tests__/PromptCard.spec.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 98[2mms[22m[39m
