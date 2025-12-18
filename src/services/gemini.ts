@@ -201,3 +201,145 @@ ${content}
 export function isApiConfigured(): boolean {
   return !!API_KEY;
 }
+
+/**
+ * 批量分析多個 Prompts（用於庫更新後自動分類）
+ */
+export async function batchAnalyzePrompts(
+  prompts: { id: string; content: string }[]
+): Promise<Map<string, AnalysisResult>> {
+  const results = new Map<string, AnalysisResult>();
+
+  // 每次處理 5 個，避免 API 限制
+  const batchSize = 5;
+  for (let i = 0; i < prompts.length; i += batchSize) {
+    const batch = prompts.slice(i, i + batchSize);
+    const batchResults = await Promise.all(
+      batch.map(async (p) => {
+        const analysis = await analyzePrompt(p.content);
+        return { id: p.id, analysis };
+      })
+    );
+    batchResults.forEach(r => results.set(r.id, r.analysis));
+
+    // 每批之間間隔 500ms
+    if (i + batchSize < prompts.length) {
+      await delay(500);
+    }
+  }
+
+  return results;
+}
+
+export interface DuplicateCheckResult {
+  id: string;
+  title: string;
+  reason: 'duplicate' | 'invalid' | 'low_quality';
+  similarity?: number;
+  similarTo?: string;
+  suggestion: string;
+}
+
+/**
+ * 檢測無效或重複的 Prompts
+ */
+export async function detectDuplicatesAndInvalid(
+  prompts: { id: string; title: string; content: string }[]
+): Promise<DuplicateCheckResult[]> {
+  const results: DuplicateCheckResult[] = [];
+
+  if (prompts.length === 0) return results;
+
+  // 1. 檢測無效 prompts（內容過短或無意義）
+  for (const p of prompts) {
+    if (p.content.trim().length < 20) {
+      results.push({
+        id: p.id,
+        title: p.title,
+        reason: 'invalid',
+        suggestion: '內容過短，建議刪除或補充內容'
+      });
+    }
+  }
+
+  // 2. 使用 AI 進行相似度比對
+  if (prompts.length > 1) {
+    const promptSummaries = prompts
+      .slice(0, 20) // 限制數量避免 token 超限
+      .map((p, i) => `[${i}] ${p.title}: ${p.content.slice(0, 100)}...`)
+      .join('\n');
+
+    const systemPrompt = `分析以下 Prompts 清單，找出可能重複或品質較低的項目。
+
+Prompts 清單：
+${promptSummaries}
+
+回傳格式（JSON 陣列）：
+[
+  {
+    "index": 0,
+    "reason": "duplicate|low_quality",
+    "similarToIndex": 1,
+    "similarity": 85,
+    "suggestion": "建議刪除原因"
+  }
+]
+
+只找出真正需要刪除的項目，不要列出所有項目。只回傳 JSON。`;
+
+    try {
+      const result = await getModel().generateContent(systemPrompt);
+      const text = result.response.text();
+      const parsed = extractJson<Array<{
+        index: number;
+        reason: 'duplicate' | 'low_quality';
+        similarToIndex?: number;
+        similarity?: number;
+        suggestion: string;
+      }>>(text, true);
+
+      if (parsed && Array.isArray(parsed)) {
+        for (const item of parsed) {
+          if (item.index >= 0 && item.index < prompts.length) {
+            const p = prompts[item.index];
+            results.push({
+              id: p.id,
+              title: p.title,
+              reason: item.reason === 'duplicate' ? 'duplicate' : 'low_quality',
+              similarity: item.similarity,
+              similarTo: item.similarToIndex !== undefined ? prompts[item.similarToIndex]?.title : undefined,
+              suggestion: item.suggestion
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('AI duplicate detection failed:', error);
+    }
+  }
+
+  return results;
+}
+
+/**
+ * 為單個 Prompt 生成更好的標題
+ */
+export async function generateBetterTitle(content: string): Promise<string> {
+  if (!content.trim()) return '未命名 Prompt';
+
+  const systemPrompt = `為以下 AI Prompt 生成一個簡短、吸引人的中文標題（8-15 個字）。
+
+Prompt 內容：
+"""
+${content.slice(0, 500)}
+"""
+
+只回傳標題文字，不要其他內容。`;
+
+  return callWithRetry(async () => {
+    const result = await getModel().generateContent(systemPrompt);
+    const text = result.response.text().trim();
+    // 移除可能的引號
+    return text.replace(/^["']|["']$/g, '');
+  }, '未命名 Prompt');
+}
