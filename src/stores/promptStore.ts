@@ -264,10 +264,25 @@ export const usePromptStore = create<PromptStore>()(
     }),
     {
       name: 'prompt-master-storage',
+      version: 2, // 版本號：更新時遞增
       partialize: (state) => ({
         sources: state.sources,
         filters: { showNSFW: state.filters.showNSFW }
-      })
+      }),
+      migrate: (persistedState: unknown, version: number) => {
+        const state = persistedState as { sources?: PromptSource[]; filters?: { showNSFW: boolean } };
+
+        // 版本 1 或更舊 -> 版本 2：強制更新 sources
+        if (version < 2) {
+          console.log('Migrating store from version', version, 'to version 2');
+          return {
+            ...state,
+            sources: defaultSources, // 使用最新的預設來源
+          };
+        }
+
+        return state;
+      }
     }
   )
 );
