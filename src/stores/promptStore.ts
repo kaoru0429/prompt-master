@@ -168,13 +168,32 @@ export const usePromptStore = create<PromptStore>()(
       },
 
       syncSource: async (id) => {
-        // TODO: 實作同步邏輯
-        console.log('Syncing source:', id);
-        set((state) => ({
-          sources: state.sources.map((s) =>
-            s.id === id ? { ...s, lastSync: new Date().toISOString() } : s
-          )
-        }));
+        try {
+          const { syncPromptsFromSource } = await import('../services/sync');
+          const newPrompts = await syncPromptsFromSource(id);
+
+          if (newPrompts.length > 0) {
+            await db.prompts.bulkPut(newPrompts);
+            // Update local state to include new prompts
+            const currentPrompts = await db.prompts.toArray();
+            // Optimization: We could just append, but bulkPut updates existing, so reloading is safer to keep consistency
+            set((state) => ({
+              prompts: currentPrompts,
+              sources: state.sources.map((s) =>
+                s.id === id ? { ...s, lastSync: new Date().toISOString(), promptCount: (s.promptCount || 0) + newPrompts.length } : s
+              )
+            }));
+          } else {
+            // Just update the timestamp if no new prompts
+            set((state) => ({
+              sources: state.sources.map((s) =>
+                s.id === id ? { ...s, lastSync: new Date().toISOString() } : s
+              )
+            }));
+          }
+        } catch (error) {
+          console.error('Sync failed:', error);
+        }
       }
     }),
     {
