@@ -1,0 +1,24 @@
+<frozen runpy>:128: RuntimeWarning: 'codewiki.cli.main' found in sys.modules after import of package 'codewiki.cli', but prior to execution of 'codewiki.cli.main'; this may result in unpredictable behaviour
+Usage: python -m codewiki.cli.main config set [OPTIONS]
+
+  Set configuration values for CodeWiki.
+
+  API keys are stored securely in your system keychain:   ??macOS: Keychain
+  Access   ??Windows: Credential Manager     ??Linux: Secret Service (GNOME
+  Keyring, KWallet)
+
+  Examples:
+
+  # Set all configuration
+  $ codewiki config set --api-key sk-abc123 --base-url https://api.anthropic.com \
+      --main-model claude-sonnet-4 --cluster-model claude-sonnet-4
+
+  # Update only API key
+  $ codewiki config set --api-key sk-new-key
+
+Options:
+  --api-key TEXT        LLM API key (stored securely in system keychain)
+  --base-url TEXT       LLM API base URL (e.g., https://api.anthropic.com)
+  --main-model TEXT     Primary model for documentation generation
+  --cluster-model TEXT  Model for module clustering (recommend top-tier)
+  --help                Show this message and exit.

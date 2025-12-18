@@ -1,0 +1,27 @@
+<frozen runpy>:128: RuntimeWarning: 'codewiki.cli.main' found in sys.modules after import of package 'codewiki.cli', but prior to execution of 'codewiki.cli.main'; this may result in unpredictable behaviour
+Usage: python -m codewiki.cli.main generate [OPTIONS]
+
+  Generate comprehensive documentation for a code repository.
+
+  Analyzes the current repository and generates documentation using LLM-
+  powered analysis. Documentation is output to ./docs/ by default.
+
+  Examples:
+
+  # Basic generation
+  $ codewiki generate
+
+  # With git branch creation and GitHub Pages
+  $ codewiki generate --create-branch --github-pages
+
+  # Force full regeneration
+  $ codewiki generate --no-cache
+
+Options:
+  -o, --output PATH  Output directory for generated documentation (default:
+                     ./docs)
+  --create-branch    Create a new git branch for documentation changes
+  --github-pages     Generate index.html for GitHub Pages deployment
+  --no-cache         Force full regeneration, ignoring cache
+  -v, --verbose      Show detailed progress and debug information
+  --help             Show this message and exit.

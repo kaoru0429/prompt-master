@@ -27,3 +27,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.venv_codewiki/
+codewiki_output/
+
