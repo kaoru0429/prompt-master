@@ -1270,14 +1270,10 @@ const HomePage: React.FC = () => {
             <Plus size={18} /> 新增 Prompt
           </button>
         </div>
-        <div style={{ padding: '20px', border: '1px solid green' }}>
-          <h3>Layout Works</h3>
-          <p>Current Page: {currentPage}</p>
-        </div>
-        {/* {renderContent()} */}
+        {renderContent()}
       </main>
 
-      {/* {showAddModal && (
+      {showAddModal && (
         <AddPromptModal
           onClose={() => setShowAddModal(false)}
           onSave={addPrompt}
@@ -1320,7 +1316,7 @@ const HomePage: React.FC = () => {
           prompt={usePrompt}
           onClose={() => setUsePrompt(null)}
         />
-      )} */}
+      )}
     </div>
   );
 };
