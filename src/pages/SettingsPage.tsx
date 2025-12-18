@@ -99,6 +99,37 @@ const SettingsPage: React.FC = () => {
     setDuplicates([]);
   };
 
+  // 批量刪除「分析失敗」的 Prompts
+  const failedPrompts = prompts.filter(
+    p => p.title === '未命名 Prompt' && p.description?.includes('自動分析失敗')
+  );
+
+  const handleDeleteAllFailed = async () => {
+    if (failedPrompts.length === 0) {
+      toast.info('沒有找到分析失敗的 Prompts');
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `確定要刪除 ${failedPrompts.length} 個分析失敗的 Prompts 嗎？此操作無法復原。`
+    );
+
+    if (!confirmed) return;
+
+    toast.loading(`正在刪除 ${failedPrompts.length} 個 Prompts...`, { id: 'delete-failed' });
+
+    try {
+      for (const p of failedPrompts) {
+        await deletePrompt(p.id);
+      }
+      toast.success(`已刪除 ${failedPrompts.length} 個分析失敗的 Prompts`, { id: 'delete-failed' });
+    } catch (error) {
+      console.error('Delete failed:', error);
+      toast.error('刪除失敗', { id: 'delete-failed' });
+    }
+  };
+
+
   return (
     <div>
       <h2 style={{ marginBottom: '24px' }}>設定</h2>
@@ -128,6 +159,16 @@ const SettingsPage: React.FC = () => {
             <AlertTriangle size={16} />
             {isChecking ? '檢測中...' : '檢測重複/無效'}
           </button>
+          {failedPrompts.length > 0 && (
+            <button
+              className="btn btn-secondary"
+              onClick={handleDeleteAllFailed}
+              style={{ color: 'var(--danger)' }}
+            >
+              <Trash2 size={16} />
+              刪除分析失敗 ({failedPrompts.length})
+            </button>
+          )}
         </div>
 
         {/* 重複檢測結果 */}
