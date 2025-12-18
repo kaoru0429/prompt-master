@@ -22,7 +22,7 @@ export interface AnalysisResult {
  * 使用 Gemini 分析 Prompt 內容，自動產生標題、描述、標籤
  */
 export async function analyzePrompt(content: string): Promise<AnalysisResult> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-preview-05-20' });
 
   const prompt = `
 分析以下 AI Prompt，並以 JSON 格式回傳：
@@ -75,7 +75,7 @@ export async function analyzeUserInput(
   userInput: string,
   variables: { name: string; description: string }[]
 ): Promise<Record<string, string>> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-preview-05-20' });
 
   const variableList = variables.map(v => `- ${v.name}: ${v.description}`).join('\n');
 
@@ -119,7 +119,7 @@ ${userInput}
  * 根據標籤建議分類
  */
 export async function suggestTags(content: string): Promise<string[]> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-preview-05-20' });
 
   const prompt = `
 分析以下內容，建議 5-8 個相關的英文標籤。
