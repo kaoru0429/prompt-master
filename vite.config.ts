@@ -7,7 +7,7 @@ export default defineConfig({
   base: '/prompt-master/',
   plugins: [react()],
   server: {
-    host: '127.0.0.1',
+    host: true,
     port: 5173,
   },
   test: {

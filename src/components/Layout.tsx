@@ -9,9 +9,10 @@ const Layout: React.FC = () => {
 
   return (
     <div className="app-container">
-      <div className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
-        <Sidebar onMobileItemClick={() => setIsMobileMenuOpen(false)} />
-      </div>
+      <Sidebar
+        isOpen={isMobileMenuOpen}
+        onMobileItemClick={() => setIsMobileMenuOpen(false)}
+      />
       <MobileNav
         isOpen={isMobileMenuOpen}
         onToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

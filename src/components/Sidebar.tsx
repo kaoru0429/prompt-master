@@ -5,15 +5,16 @@ import {
 import { usePromptStore } from '../stores/promptStore';
 
 interface SidebarProps {
+  isOpen?: boolean;
   onMobileItemClick?: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ onMobileItemClick }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, onMobileItemClick }) => {
   const { prompts, sources, toggleSource, collections } = usePromptStore();
   const favorites = prompts.filter(p => p.isFavorite).length;
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="logo">
         <Sparkles size={28} color="#6366f1" />
         <h2>Prompt Master</h2>
