@@ -586,11 +586,18 @@ body {
 @media (max-width: 1024px) {
   .sidebar {
     position: fixed;
+    top: 0;
     left: -280px;
+    width: 260px;
+    height: 100vh;
     z-index: 50;
     transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: var(--shadow-lg);
     display: flex;
+    flex-direction: column;
+    background-color: var(--bg-secondary);
+    padding: 24px 16px;
+    overflow-y: auto;
   }
 
   .sidebar.open {

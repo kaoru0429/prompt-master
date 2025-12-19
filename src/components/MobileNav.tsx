@@ -23,10 +23,9 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onToggle }) => {
           padding: '8px',
           color: 'var(--text-primary)',
           cursor: 'pointer',
-          display: 'none', // Hidden on desktop via CSS
         }}
       >
-        {isOpen ? <X size={20} /> : <Menu size={20} />}
+        {isOpen ? <X size={20} color="#fafafa" /> : <Menu size={20} color="#fafafa" />}
       </button>
 
       {/* Overlay */}
